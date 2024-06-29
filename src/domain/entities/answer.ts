@@ -13,10 +13,10 @@ export class Answer{
   public questionId: string
 
   constructor( props: AnswerProps, id?: string) {
-    this.content = content
+    this.content = props.content
     this.id = id ?? randomUUID()
-    this.authorId = authorId
-    this.questionId = questionId
+    this.authorId = props.authorId
+    this.questionId = props.questionId
   }
 
 }
