@@ -14,16 +14,16 @@ describe('Find Question By Slug', async () => {
 
   it('should be able to find a question', async () => {
     const questionCreated = makeQuestion({
-      slug: Slug.create('any-title'),
+      slug: Slug.create('any-slug'),
     })
 
     await inMemoryQuestionsRepository.create(questionCreated)
 
     const { question } = await sut.execute({
-      slug: 'any-title',
+      slug: 'any-slug',
     })
 
     expect(question.id).toBeTruthy()
-    expect(question.slug.value).toEqual('any-title')
+    expect(question.title).toEqual(questionCreated.title)
   })
 })
