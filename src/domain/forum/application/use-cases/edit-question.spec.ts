@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
 import { makeQuestion } from 'test/factories/make-question'
-import { DeleteQuestionUseCase } from './delete-question'
+import { EditQuestionUseCase } from './edit-question'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
-let sut: DeleteQuestionUseCase
-describe('Delete Question', async () => {
+let sut: EditQuestionUseCase
+describe('Edit Question', async () => {
   beforeEach(() => {
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository()
-    sut = new DeleteQuestionUseCase(inMemoryQuestionsRepository)
+    sut = new EditQuestionUseCase(inMemoryQuestionsRepository)
   })
 
-  it('should be able to delete a question', async () => {
+  it('should be able to edit a question', async () => {
     const newQuestion = makeQuestion(
       {
         authorId: new UniqueEntityId('any-author'),
@@ -23,14 +23,19 @@ describe('Delete Question', async () => {
     await inMemoryQuestionsRepository.create(newQuestion)
 
     await sut.execute({
-      questionId: 'question-1',
+      questionId: newQuestion.id.toString(),
       authorId: 'any-author',
+      content: 'new content',
+      title: 'new title',
     })
 
-    expect(inMemoryQuestionsRepository.items).toHaveLength(0)
+    expect(inMemoryQuestionsRepository.items[0]).toMatchObject({
+      content: 'new content',
+      title: 'new title',
+    })
   })
 
-  it('should not be able to delete a question from another user', async () => {
+  it('should not be able to edit a question from another user', async () => {
     const newQuestion = makeQuestion(
       {
         authorId: new UniqueEntityId('any-author'),
@@ -42,8 +47,10 @@ describe('Delete Question', async () => {
 
     await expect(async () => {
       await sut.execute({
-        questionId: 'question-1',
+        questionId: newQuestion.id.toString(),
         authorId: 'any-author-2',
+        content: 'new content',
+        title: 'new title',
       })
     }).rejects.toBeInstanceOf(Error)
   })
