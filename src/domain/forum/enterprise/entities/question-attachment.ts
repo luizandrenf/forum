@@ -15,7 +15,7 @@ export class QuestionAttachment extends Entity<QuestionAttachmentProps> {
     return this.props.attachmentId
   }
 
-  static create(props: QuestionAttachmentProps, id: UniqueEntityId) {
+  static create(props: QuestionAttachmentProps, id?: UniqueEntityId) {
     const attachment = new QuestionAttachment(props, id)
 
     return attachment
